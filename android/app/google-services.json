@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "406288070679",
+    "project_id": "nutrifirebase-38b2c",
+    "storage_bucket": "nutrifirebase-38b2c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:406288070679:android:8f86bc955c23b305f58452",
+        "android_client_info": {
+          "package_name": "com.example.nutrients_manager"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAick3zEHOdNo4MS07bL3ZITeN7xyxKXjs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
