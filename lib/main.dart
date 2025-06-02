@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nutrients_manager/ui/page/home/home_screen.dart';
 import 'package:nutrients_manager/ui/page/login/login_screen.dart';
-import 'package:nutrients_manager/ui/page/meal_plan/meal_plan_screen.dart';
-import 'package:nutrients_manager/ui/page/user_information/user_information_screen.dart';
 
 import 'data/controller/share_pref_controller.dart';
 
@@ -33,7 +31,9 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          home: UserInformationScreen(),
+          home: user == null
+              ? const LoginScreen()
+              : const HomeScreen(),
         );
       },
     );
