@@ -12,7 +12,8 @@ class IngredientProgress extends StatelessWidget {
     super.key,
     required this.ingredient,
     required this.totalAmount,
-    required this.progressColor, required this.width,
+    required this.progressColor,
+    required this.width,
   });
 
   @override
@@ -23,17 +24,27 @@ class IngredientProgress extends StatelessWidget {
       children: [
         Text(
           ingredient.toUpperCase(),
-          style: TextStyle(fontSize: TextSizes.s14, fontWeight: FontWeight.w700),
+          style: TextStyle(
+            fontSize: TextSizes.s14,
+            fontWeight: FontWeight.w700,
+          ),
         ),
         Row(
           children: [
-            Container(height: HeightSizes.h10, width: width,
+            Container(
+              height: HeightSizes.h10,
+              width: width,
               decoration: BoxDecoration(
                 color: progressColor,
                 borderRadius: BorderRadius.all(Radius.circular(5)),
-              ),),
+              ),
+            ),
             GapsManager.w10,
-            Text('${totalAmount}g'),
+            Text(
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+              '${totalAmount}g',
+            ),
           ],
         ),
       ],

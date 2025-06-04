@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nutrients_manager/utils/sizes_manager.dart';
 
-import '../../../../data/controller/share_pref_controller.dart';
 import '../../../../data/repository/meal_plan_repository.dart';
 import '../../../../utils/gaps_manager.dart';
 
@@ -9,15 +8,16 @@ class MealCard extends StatelessWidget {
   const MealCard({
     super.key,
     required this.dish,
-    required this.mealId,
     required this.recipeId, required this.userId, required this.loadMealPlan,
+    required this.onChooseMeal
   });
 
   final String dish;
   final int userId;
-  final int mealId;
   final int recipeId;
   final void Function(DateTime date) loadMealPlan;
+  final Future<int?> Function(BuildContext context) onChooseMeal;
+
 
   @override
   Widget build(BuildContext context) {
@@ -70,10 +70,13 @@ class MealCard extends StatelessWidget {
                       icon: Icon(Icons.add),
                       onPressed: () async {
                         try {
+                          final selectedMealId = await onChooseMeal(context);
+                          if (selectedMealId == null) return;
+
                           final success = await MealPlanRepositoryImp.instance
                               .createMealPlan(
                             uid: userId,
-                            mealId: mealId,
+                            mealId: selectedMealId,
                             recipeId: recipeId,
                             mealTime: DateTime.now(),
                           );
@@ -112,6 +115,8 @@ class MealCard extends StatelessWidget {
         GapsManager.h20,
         Text(
           textAlign: TextAlign.center,
+          overflow: TextOverflow.ellipsis,
+          maxLines: 2,
           dish,
           style: TextStyle(
             fontSize: TextSizes.s20,
