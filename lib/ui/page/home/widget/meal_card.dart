@@ -9,13 +9,14 @@ class MealCard extends StatelessWidget {
     super.key,
     required this.dish,
     required this.recipeId, required this.userId, required this.loadMealPlan,
-    required this.mealId,
+    required this.mealId, required this.imageUrl,
   });
 
   final String dish;
   final int userId;
   final int recipeId;
   final int mealId;
+  final String imageUrl;
   final void Function(DateTime date) loadMealPlan;
 
 
@@ -35,7 +36,7 @@ class MealCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       image: NetworkImage(
-                        'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/1200px-Good_Food_Display_-_NCI_Visuals_Online.jpg',
+                        imageUrl
                       ),
                       fit: BoxFit.cover,
                     ),

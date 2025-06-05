@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:nutrients_manager/data/models/mood_recipe.dart';
+import 'package:nutrients_manager/data/repository/recipe_repository.dart';
 
 import '../../../../data/repository/meal_plan_repository.dart';
 import '../../../../utils/app_navigator.dart';
@@ -23,10 +24,33 @@ class MoodSuggestionsCarousel extends StatelessWidget {
     required this.onPageChanged,
     required this.reloadMealPlan,
     required this.user,
-    required this.mealId,
+    required this.mealId
   });
 
-
+  Future<int?> _showChooseMealDialog(BuildContext context, int recipeId) async {
+    final fetchedMeals = await RecipeRepositoryImp.instance.fetchRecipeToGetMeal(recipeId);
+    return await showDialog<int>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Chọn bữa ăn'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: fetchedMeals.mealItems.map((meal) {
+                return ListTile(
+                  title: Text(meal.meal.name),
+                  onTap: () {
+                    Navigator.of(context).pop(meal.meal.id);
+                  },
+                );
+              }).toList(),
+            ),
+          ),
+        );
+      },
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -92,7 +116,7 @@ class MoodSuggestionsCarousel extends StatelessWidget {
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(25),
                                     child: Image.network(
-                                      'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg/1200px-Good_Food_Display_-_NCI_Visuals_Online.jpg',
+                                      recipe.imageUrl,
                                       height: 200,
                                       width: 200,
                                       fit: BoxFit.cover,
@@ -118,11 +142,22 @@ class MoodSuggestionsCarousel extends StatelessWidget {
                                       icon: Icon(Icons.add),
                                       onPressed: () async {
                                         try {
+                                          final mId = await _showChooseMealDialog(context, recipe.id);
 
+                                          if (mId == null) {
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(
+                                                content: Text('Bạn chưa chọn bữa ăn.'),
+                                                backgroundColor: Colors.red,
+                                                duration: Duration(seconds: 2),
+                                              ),
+                                            );
+                                            return;
+                                          }
 
                                           final success = await MealPlanRepositoryImp.instance.createMealPlan(
                                             uid: user.id,
-                                            mealId: mealId,
+                                            mealId: mId,
                                             recipeId: recipe.id,
                                             mealTime: DateTime.now(),
                                           );

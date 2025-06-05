@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:nutrients_manager/data/models/mood.dart';
 import 'package:nutrients_manager/ui/page/home/widget/radio_progress.dart';
 
 import '../../../../data/models/nutrient_totals.dart';
@@ -13,7 +14,7 @@ class UserOverviewHeader extends StatefulWidget {
   final void Function(BuildContext context) onSelectDate;
   final UserDTB user;
   final String selectedMood;
-  final List<String> moods;
+  final List<Mood> moods;
   final Map<String, String> moodIcons;
   final double caloriesGoal;
   final double progress;
@@ -93,25 +94,29 @@ class _UserOverviewHeaderState extends State<UserOverviewHeader> {
                     DropdownButton<String>(
                       value: widget.selectedMood,
                       underline: const SizedBox(),
-                      items: widget.moods.map((String mood) {
-                        return DropdownMenuItem<String>(
-                          value: mood,
-                          child: Text(
-                            widget.moodIcons[mood] ?? '',
-                            style: const TextStyle(
-                              fontSize: 20,
-                              color: Colors.black87,
-                            ),
-                          ),
-                        );
-                      }).toList(),
+                      items:
+                          widget.moods.map((Mood mood) {
+                            return DropdownMenuItem<String>(
+                              value: mood.moodName,
+                              child: Text(
+                                widget.moodIcons[mood.moodName] ?? '',
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                            );
+                          }).toList(),
                       onChanged: (String? newMood) {
                         if (newMood != null) {
-                          final moodId = widget.moods.indexOf(newMood) + 1;
-                          widget.onMoodChanged(moodId);
+                          final selectedMoodObj = widget.moods.firstWhere(
+                            (mood) => mood.moodName == newMood,
+                          );
+                          widget.onMoodChanged(selectedMoodObj.id);
                         }
                       },
                     ),
+
                     const SizedBox(width: 10),
                     CircleAvatar(
                       radius: 20,
@@ -124,7 +129,7 @@ class _UserOverviewHeaderState extends State<UserOverviewHeader> {
                           color: Colors.white,
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -141,36 +146,36 @@ class _UserOverviewHeaderState extends State<UserOverviewHeader> {
                   widget.totals == null
                       ? const CircularProgressIndicator()
                       : Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      IngredientProgress(
-                        ingredient: "Protein",
-                        totalAmount: widget.totals!.protein.toDouble(),
-                        progressColor: Colors.purple,
-                        width: widget.width * 0.3,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          IngredientProgress(
+                            ingredient: "Protein",
+                            totalAmount: widget.totals!.protein.toDouble(),
+                            progressColor: Colors.purple,
+                            width: widget.width * 0.3,
+                          ),
+                          IngredientProgress(
+                            ingredient: "Carbs",
+                            totalAmount: widget.totals!.carbs.toDouble(),
+                            width: widget.width * 0.3,
+                            progressColor: Colors.red,
+                          ),
+                          IngredientProgress(
+                            ingredient: "Fat",
+                            totalAmount: widget.totals!.fat.toDouble(),
+                            width: widget.width * 0.3,
+                            progressColor: Colors.green,
+                          ),
+                          IngredientProgress(
+                            ingredient: "Fiber",
+                            totalAmount: widget.totals!.fiber.toDouble(),
+                            width: widget.width * 0.3,
+                            progressColor: Colors.yellow,
+                          ),
+                        ],
                       ),
-                      IngredientProgress(
-                        ingredient: "Carbs",
-                        totalAmount: widget.totals!.carbs.toDouble(),
-                        width: widget.width * 0.3,
-                        progressColor: Colors.red,
-                      ),
-                      IngredientProgress(
-                        ingredient: "Fat",
-                        totalAmount: widget.totals!.fat.toDouble(),
-                        width: widget.width * 0.3,
-                        progressColor: Colors.green,
-                      ),
-                      IngredientProgress(
-                        ingredient: "Fiber",
-                        totalAmount: widget.totals!.fiber.toDouble(),
-                        width: widget.width * 0.3,
-                        progressColor: Colors.yellow,
-                      ),
-                    ],
-                  ),
                 ],
               ),
             ],
@@ -180,4 +185,3 @@ class _UserOverviewHeaderState extends State<UserOverviewHeader> {
     );
   }
 }
-

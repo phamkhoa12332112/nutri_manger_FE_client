@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final mealPlan = mealPlanFromJson(jsonString);
-
 import 'dart:convert';
 
 import 'package:nutrients_manager/data/models/meal.dart';

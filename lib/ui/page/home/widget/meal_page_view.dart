@@ -27,30 +27,6 @@ class MealPageView extends StatelessWidget {
     required this.loadMealPlan,
   });
 
-  Future<int?> _showChooseMealDialog(BuildContext context) async {
-    return await showDialog<int>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Chọn bữa ăn'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: fetchedMeals.map((meal) {
-                return ListTile(
-                  title: Text(meal.meal.name),
-                  onTap: () {
-                    Navigator.of(context).pop(meal.meal.id); // Trả về mealId
-                  },
-                );
-              }).toList(),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -126,6 +102,7 @@ class MealPageView extends StatelessWidget {
                   loadMealPlan: (date) => loadMealPlan(selectedDate),
                   dish: recipe.name,
                   userId: user.id,
+                  imageUrl: recipe.imageUrl,
                   recipeId: recipe.id,
                   mealId: meal.meal.id,
                 ),

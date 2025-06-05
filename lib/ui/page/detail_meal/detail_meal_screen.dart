@@ -163,7 +163,6 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
                   ...List.generate(ingredientRecipe.ingredients.length, (index) {
                     final ingredient = ingredientRecipe.ingredients[index];
                     final quantityController = quantityControllers[index];
-                    final caloriesController = calorieControllers[index];
                     final proteinController = proteinControllers[index];
                     final fatController = fatControllers[index];
                     final carbsController = carbsControllers[index];
@@ -177,7 +176,7 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
                           Row(
                             children: [
                               CircleAvatar(
-                                backgroundImage: AssetImage("assets/images/profile.png"),
+                                backgroundImage: NetworkImage(ingredient.imageUrl),
                                 radius: 20,
                               ),
                               SizedBox(width: 12),
@@ -397,8 +396,8 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
                         borderRadius: BorderRadius.vertical(
                           bottom: Radius.circular(40),
                         ),
-                        child: Image.asset(
-                          "assets/images/profile.png",
+                        child: Image.network(
+                          recipe.imageUrl,
                           fit: BoxFit.cover,
                         ),
                       ),

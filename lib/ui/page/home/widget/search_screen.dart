@@ -22,29 +22,7 @@ class SearchResultScreen extends StatelessWidget {
     required this.fetchedMeals,
   });
 
-  Future<int?> _showChooseMealDialog(BuildContext context) async {
-    return await showDialog<int>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Chọn bữa ăn'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: fetchedMeals.map((meal) {
-                return ListTile(
-                  title: Text(meal.meal.name),
-                  onTap: () {
-                    Navigator.of(context).pop(meal.meal.id); // Trả về mealId
-                  },
-                );
-              }).toList(),
-            ),
-          ),
-        );
-      },
-    );
-  }
+
 
 
   @override
@@ -101,6 +79,7 @@ class SearchResultScreen extends StatelessWidget {
                       dish: recipe.name,
                       userId: uid,
                       recipeId: recipe.id,
+                      imageUrl: recipe.imageUrl,
                       mealId: meal.id,),
                   );
                 },

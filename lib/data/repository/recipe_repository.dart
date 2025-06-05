@@ -1,9 +1,8 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:nutrients_manager/data/models/meal_recipe.dart';
+import 'package:nutrients_manager/data/models/recipe_ingredient_meal.dart';
 
-import '../models/meal.dart';
 import '../models/recipe.dart';
 
 abstract class RecipeRepository{
@@ -27,6 +26,18 @@ class RecipeRepositoryImp implements RecipeRepository {
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = jsonDecode(response.body);
       return Recipe.fromJson(data['data']);
+    } else {
+      throw Exception('Failed to fetch meals: ${response.body}');
+    }
+  }
+
+  Future<RecipeIngredientMeal> fetchRecipeToGetMeal(int recipeId) async {
+    final url = Uri.parse('$baseUrl/recipes/$recipeId');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      return RecipeIngredientMeal.fromJson(data['data']);
     } else {
       throw Exception('Failed to fetch meals: ${response.body}');
     }

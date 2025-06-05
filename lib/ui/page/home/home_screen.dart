@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nutrients_manager/data/models/ingredient_recipe.dart';
 import 'package:nutrients_manager/data/models/meal.dart';
+import 'package:nutrients_manager/data/models/mood.dart';
 import 'package:nutrients_manager/data/models/mood_recipe.dart';
 import 'package:nutrients_manager/data/models/nutrient_totals.dart';
 import 'package:nutrients_manager/data/repository/detail_meal_repository.dart';
@@ -46,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
   double caloriesGoal = 0;
   double progress = 0.0;
 
-  List<String> moods = [];
+  List<Mood> moods = [];
   List<String> meals = [];
   late List<MoodRecipe> moodBasedSuggestions = [];
   List<MealPlan> mealPlans = [];
@@ -136,7 +137,6 @@ class _HomeScreenState extends State<HomeScreen> {
       );
 
       if (mealPlans.isEmpty) {
-        print("No meal plans for today.");
         setState(() {
           this.mealPlans = [];
           totals = NutrientTotals.zero();
@@ -216,16 +216,26 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void loadMoods() async {
     try {
-      final fetchedMood = await MoodRepositoryImp.instance.fetchAllMoods();
-      setState(() {
-        moods = fetchedMood.map((mood) => mood.moodName).toList();
-        selectedMood = moods.isNotEmpty ? moods[0] : '';
-      });
-      loadMoodBasedSuggestions(moods.indexOf(selectedMood) + 1);
-    } catch (e) {
-      print('Error fetching mood: $e');
+      final fetchedMoods = await MoodRepositoryImp.instance.fetchAllMoods();
+
+      if (fetchedMoods.isNotEmpty) {
+        final firstMood = fetchedMoods.first;
+
+        setState(() {
+          moods = fetchedMoods;
+          selectedMood = firstMood.moodName;
+        });
+
+        loadMoodBasedSuggestions(firstMood.id); // 🟢 Gọi đúng moodId
+      } else {
+        print('No moods found');
+      }
+    } catch (e, stackTrace) {
+      print('❌ Error fetching mood: $e');
+      print(stackTrace);
     }
   }
+
 
   void loadMoodBasedSuggestions(int moodId) async {
     if (selectedMood.isEmpty) return;
@@ -235,6 +245,7 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         moodBasedSuggestions = fetchedSuggestions;
       });
+
       if (controller.hasClients && fetchedSuggestions.isNotEmpty) {
         controller.jumpToPage(0);
       }
@@ -306,7 +317,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
     if (isLoading || user == null) {
       return Scaffold(body: Center(child: CircularProgressIndicator()));
     }
@@ -329,7 +339,8 @@ class _HomeScreenState extends State<HomeScreen> {
             totals: totals,
             onMoodChanged: (moodId) {
               setState(() {
-                selectedMood = moods[moodId - 1];
+                final mood = moods.firstWhere((m) => m.id == moodId, orElse: () => moods.first);
+                selectedMood = mood.moodName;
                 currentIndex = 0;
                 pageoffSet = 0;
               });
