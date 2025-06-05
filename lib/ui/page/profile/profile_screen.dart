@@ -38,10 +38,11 @@
 
     @override
     void initState() {
-      super.initState();
+
       final now = DateTime.now();
       startDate = now.subtract(const Duration(days: 6));
       endDate = now;
+      super.initState();
       loadUserData();
     }
 
@@ -312,29 +313,6 @@
       }
     }
 
-    Future<List<double>> getWeeklyCaloriesData(DateTime endDate) async {
-      List<double> weeklyData = [];
-
-      for (int i = 6; i >= 0; i--) {
-        final date = endDate.subtract(Duration(days: i));
-        final plans = await MealPlanRepositoryImp.instance.fetchMealPlan(
-          uid: user!.id,
-          date: date,
-        );
-
-        double totalCalories = 0;
-        for (var plan in plans) {
-          final quantity = plan.mealItem.quantity;
-          final recipe = plan.mealItem.recipe;
-          totalCalories += recipe.totalCalories * quantity;
-        }
-
-        weeklyData.add(totalCalories);
-      }
-
-      return weeklyData;
-    }
-
     Future<List<double>> getCaloriesDataInRange(int userId, DateTime end) async {
       List<double> data = [];
 
@@ -342,12 +320,23 @@
       final plans = await StatisticsRepositoryImpl.instance
           .getStatisticFromDateToDate(uid: userId, from: start, to: end);
 
+      if (plans.isEmpty) {
+        // Provide default 7 zeros for 7 days
+        return List.filled(7, 0);
+      }
+
       for (var plan in plans) {
         data.add(plan.totalCalories);
       }
 
+      // If data length is less than 7, fill the rest with zeros
+      if (data.length < 7) {
+        data.addAll(List.filled(7 - data.length, 0));
+      }
+
       return data;
     }
+
 
     Future<void> pickDateRange() async {
       final picked = await showDatePicker(

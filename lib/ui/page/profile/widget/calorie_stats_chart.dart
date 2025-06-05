@@ -67,7 +67,7 @@ class CalorieStatsChart extends StatelessWidget {
                         isEnough
                             ? Colors.red
                             : isOver
-                            ? Colors.red.shade100
+                            ? Colors.orange
                             : Colors.green,
                     fontWeight: FontWeight.bold,
                     fontSize: 12,
