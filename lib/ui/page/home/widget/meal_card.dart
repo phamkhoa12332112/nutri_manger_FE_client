@@ -9,14 +9,14 @@ class MealCard extends StatelessWidget {
     super.key,
     required this.dish,
     required this.recipeId, required this.userId, required this.loadMealPlan,
-    required this.onChooseMeal
+    required this.mealId,
   });
 
   final String dish;
   final int userId;
   final int recipeId;
+  final int mealId;
   final void Function(DateTime date) loadMealPlan;
-  final Future<int?> Function(BuildContext context) onChooseMeal;
 
 
   @override
@@ -70,13 +70,10 @@ class MealCard extends StatelessWidget {
                       icon: Icon(Icons.add),
                       onPressed: () async {
                         try {
-                          final selectedMealId = await onChooseMeal(context);
-                          if (selectedMealId == null) return;
-
                           final success = await MealPlanRepositoryImp.instance
                               .createMealPlan(
                             uid: userId,
-                            mealId: selectedMealId,
+                            mealId: mealId,
                             recipeId: recipeId,
                             mealTime: DateTime.now(),
                           );

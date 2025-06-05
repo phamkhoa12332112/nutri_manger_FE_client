@@ -1,4 +1,3 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nutrients_manager/data/models/ingredient_recipe.dart';
@@ -274,30 +273,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Future<int?> _showChooseMealDialog(BuildContext context) async {
-    return await showDialog<int>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Chọn bữa ăn'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: fetchedMeals.map((meal) {
-                return ListTile(
-                  title: Text(meal.meal.name),
-                  onTap: () {
-                    Navigator.of(context).pop(meal.meal.id); // Trả về mealId
-                  },
-                );
-              }).toList(),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
   double calculateCaloriesProgress({
     required List<MealPlan> mealPlans,
     required double dailyCaloriesGoal,
@@ -406,19 +381,26 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
-                          MoodSuggestionsCarousel(
-
-                            moodBasedSuggestions: moodBasedSuggestions,
-                            controller: controller,
-                            currentIndex: currentIndex,
-                            onPageChanged: (index) {
-                              setState(() {
-                                currentIndex = index % moodBasedSuggestions.length;
-                              });
-                            },
-                            reloadMealPlan: () => loadMealPlan(selectedDate!),
-                            user: user!, onChooseMeal: _showChooseMealDialog,
-                          ),
+                          (fetchedMeals.isEmpty ||
+                                  selectedIndex >= fetchedMeals.length)
+                              ? Center(
+                                child: Text("Không có dữ liệu món ăn nào."),
+                              )
+                              : MoodSuggestionsCarousel(
+                                mealId: fetchedMeals[selectedIndex].meal.id,
+                                moodBasedSuggestions: moodBasedSuggestions,
+                                controller: controller,
+                                currentIndex: currentIndex,
+                                onPageChanged: (index) {
+                                  setState(() {
+                                    currentIndex =
+                                        index % moodBasedSuggestions.length;
+                                  });
+                                },
+                                reloadMealPlan:
+                                    () => loadMealPlan(selectedDate!),
+                                user: user!,
+                              ),
                           MealSelector(
                             meals: meals,
                             selectedIndex: selectedIndex,

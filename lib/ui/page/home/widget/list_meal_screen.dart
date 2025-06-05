@@ -83,7 +83,7 @@ class MealDetailListScreen extends StatelessWidget {
               recipeId: recipe.id,
               userId: uid,
               loadMealPlan: loadMealPlan,
-              onChooseMeal: _showChooseMealDialog, // gọi dialog đã có sẵn
+              mealId: mealId,
             ),
           );
         },

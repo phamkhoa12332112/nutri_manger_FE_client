@@ -13,7 +13,7 @@ class MoodSuggestionsCarousel extends StatelessWidget {
   final Function(int) onPageChanged;
   final Function() reloadMealPlan;
   final dynamic user;
-  final Future<int?> Function(BuildContext context) onChooseMeal;
+  final int mealId;
 
   const MoodSuggestionsCarousel({
     super.key,
@@ -23,7 +23,7 @@ class MoodSuggestionsCarousel extends StatelessWidget {
     required this.onPageChanged,
     required this.reloadMealPlan,
     required this.user,
-    required this.onChooseMeal,
+    required this.mealId,
   });
 
 
@@ -118,12 +118,11 @@ class MoodSuggestionsCarousel extends StatelessWidget {
                                       icon: Icon(Icons.add),
                                       onPressed: () async {
                                         try {
-                                          final selectedMealId = await onChooseMeal(context);
-                                          if (selectedMealId == null) return;
+
 
                                           final success = await MealPlanRepositoryImp.instance.createMealPlan(
                                             uid: user.id,
-                                            mealId: selectedMealId,
+                                            mealId: mealId,
                                             recipeId: recipe.id,
                                             mealTime: DateTime.now(),
                                           );

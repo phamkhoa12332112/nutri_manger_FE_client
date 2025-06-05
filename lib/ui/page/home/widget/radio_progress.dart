@@ -29,7 +29,7 @@ class RadioProgress extends StatelessWidget {
             text: TextSpan(
               children: [
                 TextSpan(
-                  text: '$number',
+                  text: number.toStringAsFixed(0),
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.w700,

@@ -127,7 +127,7 @@ class MealPageView extends StatelessWidget {
                   dish: recipe.name,
                   userId: user.id,
                   recipeId: recipe.id,
-                  onChooseMeal: _showChooseMealDialog, // gọi dialog đã có sẵn
+                  mealId: meal.meal.id,
                 ),
               );
             },

@@ -101,9 +101,7 @@ class SearchResultScreen extends StatelessWidget {
                       dish: recipe.name,
                       userId: uid,
                       recipeId: recipe.id,
-                      onChooseMeal: (context) => _showChooseMealDialog(context
-                    ),
-                  ),
+                      mealId: meal.id,),
                   );
                 },
               ),
